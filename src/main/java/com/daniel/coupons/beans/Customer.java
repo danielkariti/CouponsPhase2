@@ -9,7 +9,6 @@ import javax.persistence.Id;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 
 
@@ -28,7 +27,7 @@ public class Customer {
 	@Column(name = "email", unique = true, nullable = false)
 	private String email;
 	
-	@Transient
+	
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @MapsId
     private User user;

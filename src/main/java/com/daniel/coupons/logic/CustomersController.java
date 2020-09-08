@@ -1,5 +1,6 @@
 package com.daniel.coupons.logic;
 
+import java.util.Base64;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,13 +37,17 @@ public class CustomersController {
 		if(!Utils.isEmailValid(customer.getEmail())) {
 			throw new ApplicationException(ErrorType.INVALID_EMAIL,"Invalid email address");
 		}
+		
+		byte[] hashedPassword = Utils.hashPassword(customer.getPassword());
+		Base64.Encoder enc = Base64.getEncoder();
+		customer.setPassword(enc.encodeToString(hashedPassword));
 
 
 		try {
 			this.customersDao.save(customer);
 		}
 		catch (Exception e) {
-			throw new ApplicationException(ErrorType.INVALID_COUPON,"General Error");
+			throw new ApplicationException(ErrorType.INVALID_CUSTOMER,"General Error");
 		}
 	}
 
@@ -53,7 +58,7 @@ public class CustomersController {
 			customersDao.delete(customer);
 		}
 		catch (Exception e) {
-			throw new ApplicationException(ErrorType.INVALID_COUPON,"General Error");
+			throw new ApplicationException(ErrorType.INVALID_CUSTOMER,"General Error");
 		}
 	}
 
@@ -65,7 +70,7 @@ public class CustomersController {
 			return customer;
 		}
 		catch (Exception e) {
-			throw new ApplicationException(ErrorType.INVALID_COUPON,"General Error");
+			throw new ApplicationException(ErrorType.INVALID_CUSTOMER,"General Error");
 		}
 	}
 
@@ -75,7 +80,7 @@ public class CustomersController {
 			this.customersDao.save(customer);
 		}
 		catch (Exception e) {
-			throw new ApplicationException(ErrorType.INVALID_COUPON,"General Error");
+			throw new ApplicationException(ErrorType.INVALID_CUSTOMER,"General Error");
 		}
 	}
 
@@ -85,7 +90,7 @@ public class CustomersController {
 			return this.customersDao.getAllCustomers();
 		}
 		catch (Exception e) {
-			throw new ApplicationException(ErrorType.INVALID_COUPON,"General Error");
+			throw new ApplicationException(ErrorType.INVALID_CUSTOMER,"General Error");
 		}
 	}
 
@@ -95,7 +100,7 @@ public class CustomersController {
 			return this.customersDao.getAllCustomersByMinAge(minAge);
 		}
 		catch (Exception e) {
-			throw new ApplicationException(ErrorType.INVALID_COUPON,"General Error");
+			throw new ApplicationException(ErrorType.INVALID_CUSTOMER,"General Error");
 		}
 	}
 }

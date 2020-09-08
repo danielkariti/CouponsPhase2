@@ -1,8 +1,5 @@
 package com.daniel.coupons.logic;
 
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.List;
 
@@ -58,7 +55,7 @@ public class UsersController {
 		//		if (this.usersDao.isUsernameExists(user.getUsername())) {
 		//			throw new ApplicationException(ErrorType.INVALID_USER,"The username is not available, please choose a different one");
 		//		}
-		byte[] hashedPassword = this.hashPassword(user.getPassword());
+		byte[] hashedPassword = Utils.hashPassword(user.getPassword());
 		Base64.Encoder enc = Base64.getEncoder();
 		user.setPassword(enc.encodeToString(hashedPassword));
 
@@ -78,7 +75,7 @@ public class UsersController {
 			usersDao.delete(user);
 		}
 		catch (Exception e) {
-			throw new ApplicationException(ErrorType.INVALID_COUPON,"General Error");
+			throw new ApplicationException(ErrorType.INVALID_USER,"General Error");
 		}
 	}
 
@@ -89,7 +86,7 @@ public class UsersController {
 			return user;
 		}
 		catch (Exception e) {
-			throw new ApplicationException(ErrorType.INVALID_COUPON,"General Error");
+			throw new ApplicationException(ErrorType.INVALID_USER,"General Error");
 		}
 	}
 
@@ -99,24 +96,14 @@ public class UsersController {
 			this.usersDao.save(user);
 		}
 		catch (Exception e) {
-			throw new ApplicationException(ErrorType.INVALID_COUPON,"General Error");
+			throw new ApplicationException(ErrorType.INVALID_USER,"General Error");
 		}
 	}
 
 	public SuccessfulLoginData login(UserLoginDetails userLoginDetails) throws ApplicationException {
-		//		String hashedPassword = (leftSalt + userLoginDetails.getPassword() + userLoginDetails.getUsername() + rightSalt)+ "";
-		//
-		//		String saltedPassword = leftSalt + userLoginDetails.getPassword() + userLoginDetails.getUsername() + rightSalt;
-		//
-		//		MessageDigest digest;
-		//		try {
-		//			digest = MessageDigest.getInstance("SHA-256");
-		//		} catch (NoSuchAlgorithmException e) {
-		//			return null;
-		//		}
-		//		byte[] hash = digest.digest(saltedPassword.getBytes(StandardCharsets.UTF_8));
-
+		
 		User user = this.usersDao.findByUsername(userLoginDetails.getUsername());
+		
 		if (user == null) {
 			throw new ApplicationException(ErrorType.FAILED_LOGIN, "Invalid username or password");
 		}
@@ -137,7 +124,7 @@ public class UsersController {
 			return this.usersDao.getAllUsers();
 		}
 		catch (Exception e) {
-			throw new ApplicationException(ErrorType.INVALID_COUPON,"General Error");
+			throw new ApplicationException(ErrorType.INVALID_USER,"General Error");
 		}
 	}
 
@@ -147,7 +134,7 @@ public class UsersController {
 			return this.usersDao.getAllUsersByCompanyID(companyId);
 		}
 		catch (Exception e) {
-			throw new ApplicationException(ErrorType.INVALID_COUPON,"General Error");
+			throw new ApplicationException(ErrorType.INVALID_USER,"General Error");
 		}
 	}
 
@@ -162,35 +149,15 @@ public class UsersController {
 			throw new ApplicationException(ErrorType.INVALID_PASSWORD, "Password does not match");
 		}
 
-		byte[] hashedPassword = this.hashPassword(newPassword);
+		byte[] hashedPassword = Utils.hashPassword(newPassword);
 
 		Base64.Encoder enc = Base64.getEncoder();
 		user.setPassword(enc.encodeToString(hashedPassword));
 		this.usersDao.save(user);
 	}
 
-	private byte[] hashPassword(String password) {
-		try {
-			MessageDigest digest = MessageDigest.getInstance("SHA-256");
-			String saltedValue = this.saltValue(password);
-			return digest.digest(saltedValue.getBytes(StandardCharsets.UTF_8));
-		} catch (NoSuchAlgorithmException e) {
-			return null;
-		}
-	}
-
-	private String saltValue(String password) {
-
-
-		String leftSalt = "!&DJsfamhk81248##9@(";
-		String rightSalt = "@82fhls()2%%^(@nslG9f";
-
-		return leftSalt + password + rightSalt;
-	}
-
 	private boolean comparePassword(String existingPassword, String userInput) {
-
-		byte[] userInputHash = this.hashPassword(userInput);
+		byte[] userInputHash = Utils.hashPassword(userInput);
 		Base64.Encoder enc = Base64.getEncoder();
 		return existingPassword.equals(enc.encodeToString(userInputHash));
 

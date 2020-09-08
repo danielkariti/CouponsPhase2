@@ -19,8 +19,8 @@ public interface IUsersDao extends CrudRepository<User, Long> {
 	@Query("SELECT u FROM User u WHERE company.id = :companyId")
 	public List<User> getAllUsersByCompanyID(@Param("companyId")long companyId);
 
-	//	@Query("SELECT u.id, u.type, u.company.id FROM User u WHERE username = :username AND password = :password")
-	//	public User findByUsernameAndPassword(String username, String password);
+//	@Query("SELECT u FROM User u WHERE username = :username AND password = :password")
+//	public User findByUsernameAndPassword(String username, String password);
 
 
 

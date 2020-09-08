@@ -1,7 +1,5 @@
 package com.daniel.coupons.beans;
 
-
-
 import java.util.List;
 
 import javax.persistence.CascadeType;

@@ -22,40 +22,44 @@ import com.daniel.coupons.logic.CouponsController;
 @RequestMapping("/coupon")
 public class CouponsApi {
 
-	@Autowired
-	private CouponsController couponsController;
+    @Autowired
+    private CouponsController couponsController;
 
-	@PostMapping
-	public void createCoupon(@RequestBody Coupon coupon) throws ApplicationException {
-		this.couponsController.createCoupon(coupon);
+    @PostMapping
+    public void createCoupon(@RequestBody Coupon coupon) throws ApplicationException {
+        this.couponsController.createCoupon(coupon);
 
-	}
-	@PutMapping
-	public void updateCoupon(Coupon coupon) throws ApplicationException {
-		this.couponsController.updateCoupon(coupon);
-	}
+    }
+    @PutMapping
+    public void updateCoupon(Coupon coupon) throws ApplicationException {
+        this.couponsController.updateCoupon(coupon);
+    }
 
-	@GetMapping("/{id}")
-	public Coupon getCoupon(@PathVariable("id") long id) throws ApplicationException {
-		return this.couponsController.getCoupon(id);
-	}
+    @GetMapping("/{id}")
+    public Coupon getCoupon(@PathVariable("id") long id) throws ApplicationException {
+        return this.couponsController.getCoupon(id);
+    }
 
-	@DeleteMapping("/{id}")
-	public void removeCoupon(@PathVariable("id") long id) throws ApplicationException {
-		this.couponsController.removeCoupon(id);
-	}
+    @DeleteMapping("/{id}")
+    public void removeCoupon(@PathVariable("id") long id) throws ApplicationException {
+        this.couponsController.removeCoupon(id);
+    }
 
-	@GetMapping
-	public List<Coupon> searchCoupons(Long company, String category) throws ApplicationException {
-		if (company!=null) {
-			return this.couponsController.getAllCouponsByCompanyId(company);
-		} 
-		else if(category!= null) {
-			Category categoryName = Category.valueOf(category.toUpperCase());
-			return this.couponsController.findByCategory(categoryName);
-		}
-		else {
-			return this.couponsController.getAllCoupons();
-		}
-	}
+    @GetMapping
+    public List<Coupon> getAllCoupons() throws ApplicationException {
+        return this.couponsController.getAllCoupons();
+    }
+
+    @GetMapping("/byCategory/{category}")
+    public List<Coupon> findByCategory(@PathVariable("category")String category) throws ApplicationException {
+        Category categoryName = Category.valueOf(category.toUpperCase());
+        return this.couponsController.findByCategory(categoryName);
+
+    }
+
+    @GetMapping("/byCompany/{company_id}")
+    public List<Coupon> getAllCouponsByCompanyId(@PathVariable("company_id")long companyID) throws ApplicationException {
+        return this.couponsController.getAllCouponsByCompanyId(companyID);
+    }
+
 }

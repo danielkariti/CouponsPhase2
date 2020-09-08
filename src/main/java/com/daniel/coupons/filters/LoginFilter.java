@@ -39,7 +39,7 @@ public class LoginFilter implements Filter {
 			chain.doFilter(httpRequest, response);
 			return;
 		}
-
+	
 		String token = httpRequest.getHeader("Authorization");
 
 		PostLoginData postLoginData = (PostLoginData) cacheController.get(token);

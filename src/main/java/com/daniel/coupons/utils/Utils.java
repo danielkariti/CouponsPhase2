@@ -1,5 +1,8 @@
 package com.daniel.coupons.utils;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.regex.Matcher;
@@ -36,7 +39,23 @@ public class Utils {
         secureRandom.nextBytes(randomBytes);
         return base64Encoder.encodeToString(randomBytes);
     }
+	
+	public static byte[] hashPassword(String password) {
+		try {
+			MessageDigest digest = MessageDigest.getInstance("SHA-256");
+			String saltedValue = saltValue(password);
+			return digest.digest(saltedValue.getBytes(StandardCharsets.UTF_8));
+		} catch (NoSuchAlgorithmException e) {
+			return null;
+		}
+	}
+	
+	private static String saltValue(String password) {
+		String leftSalt = "!&DJsfamhk81248##9@(";
+		String rightSalt = "@82fhls()2%%^(@nslG9f";
 
+		return leftSalt + password + rightSalt;
+	}
 }
 
 
